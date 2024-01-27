@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: vprodb
-          image: yemiawsguru/vprofiledb:V1
+          image: yemicloudguru/vprofiledb
           args:
             - "--ignore-db-dir=lost+found"
           volumeMounts:
@@ -36,5 +36,13 @@ spec:
       volumes:
         - name: vpro-db-data
           awsElasticBlockStore:
-            volumeID: vol-0a1782d1952f71fa9
+            volumeID: vol-0aa374102cbe9e93f
             fsType: ext4
+
+      initContainers:
+        - name: busybox
+          image: busybox:latest
+          args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
+          volumeMounts:
+            - name: vpro-db-data
+              mountPath: /var/lib/mysql
